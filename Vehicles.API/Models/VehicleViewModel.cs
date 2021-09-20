@@ -1,20 +1,27 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Json.Serialization;
+using Vehicles.API.Data.Entities;
 
-namespace Vehicles.API.Data.Entities {
-    public class Vehicle {
+namespace Vehicles.API.Models {
+    public class VehicleViewModel {
         public int Id { get; set; }
 
         [Display(Name = "Tipo de vehículo")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un tipo de verhículo.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public VehicleType VehicleType { get; set; }
+        public int VehicleTypeId { get; set; }
+
+        public IEnumerable<SelectListItem> VehicleTypes { get; set; }
 
         [Display(Name = "Marca")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar una marca.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public Brand Brand { get; set; }
+        public int BrandId { get; set; }
+
+        public IEnumerable<SelectListItem> Brands { get; set; }
 
         [Display(Name = "Modelo")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
@@ -37,28 +44,15 @@ namespace Vehicles.API.Data.Entities {
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Color { get; set; }
 
-        [Display(Name = "Propietario")]
-        [JsonIgnore]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public User User { get; set; }
+        public string UserId { get; set; }
 
         [Display(Name = "Observación")]
         [DataType(DataType.MultilineText)]
         public string Remarks { get; set; }
 
-        public ICollection<VehiclePhoto> VehiclePhotos { get; set; }
-
-        [Display(Name = "# Fotos")]
-        public int VehiclePhotosCount => VehiclePhotos == null ? 0 : VehiclePhotos.Count;
-
         [Display(Name = "Foto")]
-        public string ImageFullPath => VehiclePhotos == null || VehiclePhotos.Count == 0
-            ? $"https://localhost:44352/images/"
-            : VehiclePhotos.FirstOrDefault().ImageFullPath;
+        public IFormFile ImageFile { get; set; }
 
-        public ICollection<History> Histories { get; set; }
-
-        [Display(Name = "# Historias")]
-        public int HistoriesCount => Histories == null ? 0 : Histories.Count;
+        public ICollection<VehiclePhoto> VehiclePhotos { get; set; }
     }
 }

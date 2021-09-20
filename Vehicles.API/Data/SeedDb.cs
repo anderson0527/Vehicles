@@ -26,11 +26,11 @@ namespace Vehicles.API.Data{
             await CheckUserAsync("3030", "Ledys", "Bedoya", "ledys@yopmail.com", "311 322 4620", "Calle Luna Calle Sol", UserType.User);
             await CheckUserAsync("4040", "Sandra", "Lopera", "sandra@yopmail.com", "311 322 4620", "Calle Luna Calle Sol", UserType.Admin);
         }
-
+        
         private async Task CheckUserAsync(string document, string firstName, string lastName, string email, string phoneNumber, string address, UserType userType) {
             User user = await _userHelper.GetUserAsync(email);
-            if (user == null){
-                user = new User{
+            if (user == null) {
+                user = new User {
                     Address = address,
                     Document = document,
                     DocumentType = _context.DocumentTypes.FirstOrDefault(x => x.Description == "Cédula"),
@@ -41,18 +41,19 @@ namespace Vehicles.API.Data{
                     UserName = email,
                     UserType = userType
                 };
-
                 await _userHelper.AddUserAsync(user, "123456");
                 await _userHelper.AddUserToRoleAsync(user, userType.ToString());
 
-                //string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
-                //await _userHelper.ConfirmEmailAsync(user, token);
+                string token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                await _userHelper.ConfirmEmailAsync(user, token);
             }
         }
+        
         private async Task CheckRolesAsycn() {
             await _userHelper.CheckRoleAsync(UserType.Admin.ToString());
             await _userHelper.CheckRoleAsync(UserType.User.ToString());
         }
+
         private async Task CheckProceduresAsync() {
             if (!_context.Procedures.Any()) {
                 _context.Procedures.Add(new Procedure { Price = 10000, Description = "Alineación" });
@@ -84,6 +85,7 @@ namespace Vehicles.API.Data{
                 await _context.SaveChangesAsync();
             }
         }
+
         private async Task CheckDocumentTypesAsync() {
             if (!_context.DocumentTypes.Any()) {
                 _context.DocumentTypes.Add(new DocumentType { Description = "Cédula" });
@@ -93,6 +95,7 @@ namespace Vehicles.API.Data{
                 await _context.SaveChangesAsync();
             }
         }
+
         private async Task CheckBrandsAsync() {
             if (!_context.Brands.Any()) {
                 _context.Brands.Add(new Brand { Description = "Ducati" });
@@ -114,6 +117,7 @@ namespace Vehicles.API.Data{
                 await _context.SaveChangesAsync();
             }
         }
+
         private async Task CheckVehiclesTypeAsync() {
             if (!_context.VehicleTypes.Any()) {
                 _context.VehicleTypes.Add(new VehicleType { Description = "Carro" });

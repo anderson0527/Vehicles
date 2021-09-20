@@ -56,8 +56,7 @@ namespace Vehicles.API.Controllers{
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Brand brand)
-        {
+        public async Task<IActionResult> Edit(int id, Brand brand) {
             if (id != brand.Id) {
                 return NotFound();
             }
